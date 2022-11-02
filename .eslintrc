@@ -5,13 +5,16 @@
         "plugin:@typescript-eslint/recommended",
         "plugin:import/errors",
         "plugin:import/warnings",
-        "plugin:import/typescript"
+        "plugin:import/typescript",
+        "prettier"
     ],
     "parserOptions": {
-        "ecmaVersion": 2018,
+        "ecmaVersion": 12,
         "project": "./tsconfig.json"
     },
+    "plugins": ["prettier"],
     "rules": {
+        "prettier/prettier": ["error"],
         "semi": ["error", "always"],
         "object-curly-spacing": ["error", "always"],
         "camelcase": "off",

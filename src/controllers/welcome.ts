@@ -3,9 +3,11 @@ import { Request, Response } from 'express';
 export async function welcomePage(req: Request, res: Response) {
   res
     .status(200)
-    .send('Welcome to the most epic server of all time, server of Daniil Volosevich The Greatest');
+    .send(
+      'Welcome to the most epic server of all time, server of Daniil Volosevich The Greatest'
+    );
 }
 
 export async function secretPage(req: Request, res: Response) {
-  res.status(200).send("It' a secret page. Congratulations!");
+  res.status(200).send('It`s a secret page. Congratulations!');
 }
