@@ -5,4 +5,4 @@ const router = Router();
 
 router.get('/', welcomePage);
 
-export { router };
+export default router;
