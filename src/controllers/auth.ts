@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import { hashSync, compareSync } from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../types/user';
+import User from '../@types/user';
 
 export const users: Array<User> = new Array<User>();
 
 export async function getProfile(req: Request, res: Response) {
   const { user } = req;
   if (!user) return res.sendStatus(401);
-  const username = user;
-  return res.json({ username });
+  const { username } = user;
+  return res.json(username);
 }
 
 export async function loginJWT(req: Request, res: Response) {

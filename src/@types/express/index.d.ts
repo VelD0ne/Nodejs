@@ -1,9 +1,8 @@
-import { Request } from 'express';
-import User from './user';
+import User from '../user';
 
-declare global {
+declare module 'express-serve-static-core' {
   namespace Express {
-    export interface Request {
+    interface Request {
       user?: User;
     }
   }
