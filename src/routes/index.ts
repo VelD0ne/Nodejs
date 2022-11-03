@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { welcomePage } from '../controllers/welcome';
+import start from './start';
+import auth from './auth';
 
 const router = Router();
 
-router.get('/', welcomePage);
+router.use(start);
+router.use(auth);
 
 export default router;
