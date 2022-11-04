@@ -7,9 +7,3 @@ declare module 'express-serve-static-core' {
     }
   }
 }
-
-// export interface UserInfoRequest extends Request {
-//     user?: User;
-// }
-
-// export {}
