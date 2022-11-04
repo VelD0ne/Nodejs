@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { hashSync, compareSync } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../@types/user';
@@ -6,10 +6,10 @@ import User from '../@types/user';
 export const users: Array<User> = new Array<User>();
 
 export async function getProfile(req: Request, res: Response) {
-  const { user } = req;
-  if (!user) return res.sendStatus(401);
-  const { username } = user;
-  return res.json(username);
+  const username =
+    req.profile?.name || req.user?.username || 'There is no username';
+  console.log(username);
+  return res.json(req.profile);
 }
 
 export async function loginJWT(req: Request, res: Response) {
@@ -18,7 +18,7 @@ export async function loginJWT(req: Request, res: Response) {
 
   if (!user)
     return res.json({
-      message: 'User with this username alredy does not exist',
+      message: 'User with this username does not exist',
     });
 
   if (!compareSync(req.body.password, user.password))
