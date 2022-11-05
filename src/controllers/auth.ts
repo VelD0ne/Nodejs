@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { hashSync, compareSync } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../@types/user';
@@ -6,10 +6,12 @@ import User from '../@types/user';
 export const users: Array<User> = new Array<User>();
 
 export async function getProfile(req: Request, res: Response) {
-  const username =
-    req.profile?.name || req.user?.username || 'There is no username';
-  console.log(username);
-  return res.json(req.profile);
+  const username = req.user?.displayName || req.user?.username;
+  if (!username) {
+    return res.sendStatus(401);
+  }
+  console.log(`User username: ${username}`);
+  return res.json(username);
 }
 
 export async function loginJWT(req: Request, res: Response) {
@@ -35,11 +37,22 @@ export async function loginJWT(req: Request, res: Response) {
 export async function registration(req: Request, res: Response) {
   const { username } = req.body;
 
-  if (users.find((elem) => elem.username === username))
+  if (users.find((elem) => elem.username === username)) {
     return res.json({ message: 'User with this username alredy exists' });
+  }
 
   const { password } = req.body;
-  const user: User = new User(username, hashSync(password, 10));
+  const user: User = new User(username, hashSync(password, 10), '');
   users.push(user);
   return res.sendStatus(200);
+}
+
+export async function logout(req: Request, res: Response, next: NextFunction) {
+  req.session?.destroy((err) => {
+    if (err) {
+      console.log(err);
+      return res.sendStatus(500);
+    }
+    return res.redirect('/');
+  });
 }

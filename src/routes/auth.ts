@@ -1,12 +1,23 @@
+import { profile } from 'console';
 import { Router } from 'express';
 import passport from 'passport';
-import { loginJWT, getProfile, registration } from '../controllers/auth';
+import {
+  loginJWT,
+  getProfile,
+  registration,
+  logout,
+} from '../controllers/auth';
 
 const router = Router();
 
 router.post('/registr', registration);
 
-router.get('/login/JWT', loginJWT);
+router.get('JWT', loginJWT);
+router.get(
+  '/login/JWT',
+  passport.authenticate('jwt', { session: true }),
+  (req, res) => res.redirect('/profile')
+);
 router.get(
   '/login/google',
   passport.authenticate('google', { scope: ['profile'] })
@@ -16,18 +27,15 @@ router.get(
   '/google-callback',
   passport.authenticate('google', {
     failureRedirect: '/',
+    successRedirect: '/profile',
     failureMessage: true,
-  }),
-  (req, res) => {
-    res.json(req.user);
-  }
+    scope: ['profile', 'email'],
+  })
 );
 
-router.get(
-  '/profile',
-  passport.authenticate('jwt', { session: false }),
-  getProfile
-);
+router.get('/logout', logout); // make it delete after tests
+
+router.get('/profile', getProfile);
 
 router.get('/profileGoogle', getProfile);
 

@@ -1,4 +1,4 @@
-import passport from 'passport';
+import passport, { Profile } from 'passport';
 import {
   Strategy as JWTStrategy,
   ExtractJwt,
@@ -8,7 +8,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { users } from '../controllers/auth';
 import User from '../@types/user';
 
-const configPassport = () => {
+const configJWT = () => {
   const opts: StrategyOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_TOKEN,
@@ -24,7 +24,9 @@ const configPassport = () => {
       // or you could create a new account
     })
   );
+};
 
+const configGoogle = () => {
   const { GOOGLE_CLIENT_ID } = process.env;
   const { GOOGLE_CLIENT_SECRET } = process.env;
 
@@ -35,8 +37,8 @@ const configPassport = () => {
     done(null, user);
   });
 
-  passport.deserializeUser((user: User, done) => {
-    done(null, user);
+  passport.deserializeUser((id: string, done) => {
+    done(null, id);
   });
 
   passport.use(
@@ -47,10 +49,18 @@ const configPassport = () => {
         callbackURL: 'http://localhost:3000/google-callback',
       },
       (accessToken, refreshToken, profile, cb) => {
-        cb(null, profile);
+        let user = users.find((elem) => elem.id === profile.id);
+        if (!user) {
+          user = new User(profile.displayName, '', profile.id);
+          users.push(user);
+        }
+        return cb(null, user);
       }
     )
   );
 };
 
-configPassport();
+export default function configPassport() {
+  configJWT();
+  configGoogle();
+}

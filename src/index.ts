@@ -3,26 +3,22 @@ import express, { Express } from 'express';
 import passport from 'passport';
 import session from 'express-session';
 import router from './routes/index';
+import configSession from './config/session';
+import configPassport from './config/passport';
 
 dotenv.config();
-
-require('./config/passport');
 
 const app: Express = express();
 const port = process.env.PORT;
 
-app.use(
-  session({
-    resave: false,
-    saveUninitialized: true,
-    secret: 'SECRET',
-  })
-);
+app.use(session(configSession()));
+app.use(passport.authenticate('session'));
 
 app.use(express.json());
 
 app.use(router);
 
+configPassport();
 app.use(passport.initialize());
 
 const start = () => {
