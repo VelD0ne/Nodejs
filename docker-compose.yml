@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: api
+    restart: always
+    build: .
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - db
+    volumes:
+    - .:/usr/src/app
+    - node_modules:/usr/src/app/node_modules
+
+  db:
+    container_name: db
+    image: postgres:15.0-bullseye
+    ports: 
+      - "5433:${DB_PORT}"
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      
+volumes: 
+ node_modules:
