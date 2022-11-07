@@ -5,26 +5,29 @@ import session from 'express-session';
 import router from './routes/index';
 import configSession from './config/session';
 import configPassport from './config/passport';
+import initializeDataSource from './data-source/data-source';
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
 
-app.use(session(configSession()));
-app.use(passport.authenticate('session'));
+const start = async () => {
+  await initializeDataSource();
 
-app.use(express.json());
+  app.use(session(configSession()));
+  app.use(passport.authenticate('session'));
 
-app.use(router);
+  app.use(express.json());
 
-configPassport();
-app.use(passport.initialize());
+  app.use(router);
 
-const start = () => {
+  configPassport();
+  app.use(passport.initialize());
+
   app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
   });
 };
 
-start();
+start().catch(console.error);

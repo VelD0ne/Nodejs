@@ -6,10 +6,12 @@ import User from '../@types/user';
 export const users: Array<User> = new Array<User>();
 
 export async function getProfile(req: Request, res: Response) {
-  const username = req.user?.displayName || req.user?.username;
+  const username = req.user?.username;
   if (!username) {
     return res.sendStatus(401);
   }
+  console.log(req.session);
+  console.log(req.user);
   console.log(`User username: ${username}`);
   return res.json(username);
 }
@@ -18,7 +20,7 @@ export async function loginJWT(req: Request, res: Response) {
   const { username } = req.body;
   const user = users.find((elem) => elem.username === username);
 
-  if (!user)
+  if (!user || !user.password)
     return res.json({
       message: 'User with this username does not exist',
     });

@@ -1,7 +1,7 @@
 export default class User {
   username: string;
 
-  password: string;
+  password?: string;
 
   id: string;
 

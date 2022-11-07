@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { welcomePage } from '../controllers/welcome';
+import { secretPage, welcomePage } from '../controllers/welcome';
 
 const router = Router();
 
 router.get('/', welcomePage);
+
+router.get('/secret', secretPage);
 
 export default router;

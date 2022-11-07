@@ -12,11 +12,10 @@ const router = Router();
 
 router.post('/registr', registration);
 
-router.get('JWT', loginJWT);
+router.get('/JWT', loginJWT);
 router.get(
   '/login/JWT',
-  passport.authenticate('jwt', { session: true }),
-  (req, res) => res.redirect('/profile')
+  passport.authenticate('jwt', { session: true, successRedirect: '/profile' })
 );
 router.get(
   '/login/google',
@@ -29,11 +28,10 @@ router.get(
     failureRedirect: '/',
     successRedirect: '/profile',
     failureMessage: true,
-    scope: ['profile', 'email'],
   })
 );
 
-router.get('/logout', logout); // make it delete after tests
+router.get('/logout', logout); // make it delete later
 
 router.get('/profile', getProfile);
 
