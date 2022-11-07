@@ -18,9 +18,12 @@ services:
     image: postgres:15.0-bullseye
     ports: 
       - "5433:${DB_PORT}"
+    volumes:
+      - data:/data/db
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
       
 volumes: 
+ data: {}
  node_modules:

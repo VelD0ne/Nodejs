@@ -1,12 +1,11 @@
 import { Profile } from 'passport';
 import { Session } from 'express-session';
-import User from '../user';
+import User from '../../entity/user.entity';
 
 declare module 'express-serve-static-core' {
   namespace Express {
     interface Request {
-      user?: Profile;
-      profile?: Profile;
+      user?: User;
       session?: Session;
     }
   }

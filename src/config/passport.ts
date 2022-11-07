@@ -6,7 +6,8 @@ import {
 } from 'passport-jwt';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { users } from '../controllers/auth';
-import User from '../@types/user';
+import User from '../entity/user.entity';
+import UserRepository from '../repository/user.repostory';
 
 const configJWT = () => {
   const opts: StrategyOptions = {
@@ -15,13 +16,14 @@ const configJWT = () => {
   };
 
   passport.use(
-    new JWTStrategy(opts, (jwt_payload, done) => {
-      const user = users.find((elem) => elem.username === jwt_payload.username);
+    new JWTStrategy(opts, async (jwt_payload, done) => {
+      const user = await UserRepository.findOneBy({
+        username: jwt_payload.username,
+      });
       if (user) {
         return done(null, user);
       }
       return done(null, false);
-      // or you could create a new account
     })
   );
 };
@@ -31,7 +33,7 @@ const configGoogle = () => {
   const { GOOGLE_CLIENT_SECRET } = process.env;
 
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET)
-    throw new Error('Invalid google secred or id');
+    throw new Error('Invalid google secret or id');
 
   passport.serializeUser((user, done) => {
     done(null, user);
@@ -48,11 +50,16 @@ const configGoogle = () => {
         clientSecret: GOOGLE_CLIENT_SECRET,
         callbackURL: 'http://localhost:3000/google-callback',
       },
-      (accessToken, refreshToken, profile, cb) => {
-        let user = users.find((elem) => elem.id === profile.id);
+      async (accessToken, refreshToken, profile, cb) => {
+        let user = await UserRepository.findOneBy({
+          id: profile.id,
+        });
         if (!user) {
-          user = new User(profile.displayName, '', profile.id);
-          users.push(user);
+          const newUser = await UserRepository.create({
+            username: profile.displayName,
+            id: profile.id,
+          });
+          user = await UserRepository.save(newUser);
         }
         return cb(null, user);
       }
