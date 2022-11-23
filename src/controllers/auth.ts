@@ -12,9 +12,6 @@ export async function getProfile(req: Request, res: Response) {
   if (!username) {
     return res.sendStatus(401);
   }
-  console.log(req.session);
-  console.log(req.user);
-  console.log(`User username: ${username}`);
   return res.json(username);
 }
 

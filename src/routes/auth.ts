@@ -12,7 +12,7 @@ const router = Router();
 router.post('/registr', registration);
 
 router.get('/JWT', loginJWT);
-router.get(
+router.post(
   '/login/JWT',
   passport.authenticate('jwt', { session: true, successRedirect: '/profile' })
 );
@@ -30,7 +30,7 @@ router.get(
   })
 );
 
-router.get('/logout', logout); // make it delete later
+router.delete('/logout', logout); // make it delete later
 
 router.get('/profile', getProfile);
 
